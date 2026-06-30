@@ -14,7 +14,7 @@ export const addPointsToUser = async (userId: string, newPoints: number): Promis
   try {
     // 1. Obtener los puntos actuales del usuario
     const { data: currentData, error: fetchError } = await supabase
-      .from('perfiles_usuarios')
+      .from('users_points')
       .select('total_points')
       .eq('user_id', userId)
       .single();
@@ -29,11 +29,10 @@ export const addPointsToUser = async (userId: string, newPoints: number): Promis
 
     // 2. Realizar Upsert de los nuevos puntos totales
     const { error: upsertError } = await supabase
-      .from('perfiles_usuarios')
+      .from('users_points')
       .upsert({ 
         user_id: userId, 
-        total_points: totalPoints,
-        updated_at: new Date().toISOString()
+        total_points: totalPoints
       }, { onConflict: 'user_id' });
 
     if (upsertError) {
